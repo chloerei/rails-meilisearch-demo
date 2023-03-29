@@ -97,6 +97,9 @@ GEM
     globalid (1.1.0)
       activesupport (>= 5.0)
     hiredis (0.6.3)
+    httparty (0.21.0)
+      mini_mime (>= 1.0.0)
+      multi_xml (>= 0.5.2)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
     importmap-rails (1.1.5)
@@ -118,10 +121,15 @@ GEM
       net-smtp
     marcel (1.0.2)
     matrix (0.4.2)
+    meilisearch (0.22.0)
+      httparty (>= 0.17.1, < 0.22.0)
+    meilisearch-rails (0.9.0)
+      meilisearch (~> 0.22.0)
     method_source (1.0.0)
     mini_mime (1.1.2)
     minitest (5.18.0)
     msgpack (1.6.1)
+    multi_xml (0.6.0)
     net-imap (0.3.4)
       date
       net-protocol
@@ -230,6 +238,7 @@ DEPENDENCIES
   hiredis
   importmap-rails
   jbuilder
+  meilisearch-rails
   pg (~> 1.1)
   pg_search (~> 2.3)
   propshaft

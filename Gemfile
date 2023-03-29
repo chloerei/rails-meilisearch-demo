@@ -75,3 +75,5 @@ group :test do
 end
 
 gem "pg_search", "~> 2.3"
+
+gem "meilisearch-rails"
