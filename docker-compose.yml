@@ -14,8 +14,21 @@ services:
       - postgres
       - redis
   postgres:
-    image: postgres:14
+    image: postgres:15
     environment:
       POSTGRES_PASSWORD: postgres
+  # postgres:
+  #   build:
+  #     context: ./postgres
+  #     dockerfile: Dockerfile.zhparser
+  #   environment:
+  #     POSTGRES_PASSWORD: postgres
+  # postgres:
+  #   build:
+  #     context: ./postgres
+  #     dockerfile: Dockerfile.jieba
+  #   command: postgres -c shared_preload_libraries=pg_jieba
+  #   environment:
+  #     POSTGRES_PASSWORD: postgres
   redis:
     image: redis:6
