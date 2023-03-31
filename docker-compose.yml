@@ -13,6 +13,7 @@ services:
     depends_on:
       - postgres
       - redis
+      - meilisearch
   postgres:
     image: postgres:15
     environment:

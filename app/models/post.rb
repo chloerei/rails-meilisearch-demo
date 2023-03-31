@@ -2,13 +2,14 @@ class Post < ApplicationRecord
   include PgSearch::Model
   include MeiliSearch::Rails
 
-  multisearchable against: [:title, :content]
-  pg_search_scope :search_full_text, against: {
-    title: 'A',
-    content: 'B'
-  }
+  # multisearchable against: [:headline, :content]
+
+  # pg_search_scope :search_full_text, against: {
+  #   headline: 'A',
+  #   content: 'B'
+  # }
 
   meilisearch do
-    attribute :title, :content
+    attribute :headline, :content
   end
 end
