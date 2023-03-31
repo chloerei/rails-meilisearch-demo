@@ -10,6 +10,8 @@ class Post < ApplicationRecord
   # }
 
   meilisearch do
-    attribute :headline, :content
+    searchable_attributes [:headline, :content]
+    filterable_attributes [:tag]
+    sortable_attributes [:date]
   end
 end
