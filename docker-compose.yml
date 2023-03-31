@@ -17,20 +17,20 @@ services:
     image: postgres:15
     environment:
       POSTGRES_PASSWORD: postgres
-  postgres-zhparser:
-    build:
-      context: ./postgres
-      dockerfile: Dockerfile.zhparser
-    command: postgres -c shared_preload_libraries=zhparser
-    environment:
-      POSTGRES_PASSWORD: postgres
-  postgres-jieba:
-    build:
-      context: ./postgres
-      dockerfile: Dockerfile.jieba
-    command: postgres -c shared_preload_libraries=pg_jieba
-    environment:
-      POSTGRES_PASSWORD: postgres
+  # postgres:
+  #   build:
+  #     context: ./postgres
+  #     dockerfile: Dockerfile.zhparser
+  #   command: postgres -c shared_preload_libraries=zhparser
+  #   environment:
+  #     POSTGRES_PASSWORD: postgres
+  # postgres:
+  #   build:
+  #     context: ./postgres
+  #     dockerfile: Dockerfile.jieba
+  #   command: postgres -c shared_preload_libraries=pg_jieba
+  #   environment:
+  #     POSTGRES_PASSWORD: postgres
   redis:
     image: redis:6
   meilisearch:
