@@ -77,3 +77,6 @@ end
 gem "pg_search", "~> 2.3"
 
 gem "meilisearch-rails"
+
+gem "elasticsearch-model", "~> 7.2"
+gem "elasticsearch-rails", "~> 7.2"
