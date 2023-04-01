@@ -1,34 +1,28 @@
-FROM postgres:15
+FROM postgres:15 AS builder
 
 RUN apt-get update \
   && apt-get install -y \
     build-essential \
     postgresql-server-dev-15 \
     wget \
-    git \
-  # build
-  && wget -q -O - http://www.xunsearch.com/scws/down/scws-1.2.3.tar.bz2 | tar xjf - \
+    git
+
+RUN wget -q -O - http://www.xunsearch.com/scws/down/scws-1.2.3.tar.bz2 | tar xjf - \
   && cd scws-1.2.3 \
   && ./configure \
   && make install \
-  && cd .. \
-  && rm -rf scws-1.2.3 \
-  && git clone https://github.com/amutu/zhparser.git \
+  && cd ..
+
+RUN git clone https://github.com/amutu/zhparser.git \
   && cd zhparser \
   && make \
   && make install \
-  && cd .. \
-  && rm -rf zhparser \
-  # config
-  && echo "CREATE EXTENSION zhparser; \n\
-CREATE TEXT SEARCH CONFIGURATION chinese (PARSER = zhparser); \n\
-ALTER TEXT SEARCH CONFIGURATION chinese ADD MAPPING FOR n,v,a,i,e,l,t WITH simple;" \
-    > /docker-entrypoint-initdb.d/init-zhparser.sql \
-  # clean
-  && apt-get purge -y \
-    build-essential \
-    postgresql-server-dev-15 \
-    wget \
-    git \
-  && apt-get autoremove -y \
-  && rm -rf /var/lib/apt/lists/*
+  && cd ..
+
+FROM postgres:15
+
+COPY --from=builder //usr/local/lib/libscws* /usr/local/lib/
+COPY --from=builder /usr/lib/postgresql/15/lib/zhparser.so /usr/lib/postgresql/15/lib/
+COPY --from=builder /usr/share/postgresql/15/extension/zhparser* /usr/share/postgresql/15/extension/
+COPY --from=builder /usr/share/postgresql/15/tsearch_data/dict.utf8.xdb /usr/share/postgresql/15/tsearch_data/rules.utf8.ini /usr/share/postgresql/15/tsearch_data/
+COPY --from=builder /usr/lib/postgresql/15/lib/bitcode/zhparser/zhparser.bc /usr/lib/postgresql/15/lib/bitcode/zhparser/
