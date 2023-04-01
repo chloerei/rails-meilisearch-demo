@@ -7,7 +7,7 @@ RUN apt-get update \
     postgresql-server-dev-15 \
     git
 
-RUN git clone --depth 1 --recurse-submodules --shallow-submodules  https://github.com/jaiminpan/pg_jieba \
+RUN git clone --depth 1 --recurse-submodules --shallow-submodules https://github.com/jaiminpan/pg_jieba \
   && cd pg_jieba \
   && mkdir build \
   && cd build \

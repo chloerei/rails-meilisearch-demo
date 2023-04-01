@@ -18,12 +18,6 @@ A Rails project template lets me start new projects quickly.
 
 ## Usage
 
-Clone this repo:
-
-```
-$ git clone https://github.com/chloerei/rails-app.git myapp
-```
-
 Build and install dependency:
 
 ```
@@ -42,32 +36,62 @@ Open console:
 $ docker compose run --rm web bash
 ```
 
+## 导入测试数据
+
+下载测试数据：
+
+https://www.kaggle.com/datasets/noxmoon/chinese-official-daily-news-since-2016 (需注册)
+
+解压放到 `tmp/chinese_news.csv` 。
+
+连接数据库：
+
+```console
+$ bin/rails db -p
+```
+
+然后导入：
+
+```sql
+\copy posts(date, tag, headline, content) from './tmp/chinese_news.csv' csv header;
+```
+
 ## Postgres
 
-### postgres-jieba
-
-使用以下 SQL 启用分词插件。
-
-```sql
-create extension pg_jieba;
-```
-
-然后查询：
-
-```sql
-select to_tsvector('jiebaqry', '中文测试');
-```
+用于测试不同分词插件的效果和性能。
 
 ### postgres-zhparser
 
-```sql
-CREATE EXTENSION zhparser;
-CREATE TEXT SEARCH CONFIGURATION chinese (PARSER = zhparser);
-ALTER TEXT SEARCH CONFIGURATION chinese ADD MAPPING FOR n,v,a,i,e,l WITH simple;
+修改 `docker-compose.yml` 中 postgres zhparser 相关的内容。
+
+注释 migrate/create_post_search_index 中 zhparser 相关的内容，然后
+
+```console
+$ bin/rails db:migrate
 ```
 
-然后查询：
+注释 `app/models/post.rb` 中 pg_search 的词典为 `chinese`。
 
-```sql
-select to_tsvector('chinese', '中文测试');
+查询：
+
+```ruby
+Post.pg_search("北京").limit(1)
+```
+
+### postgres-jieba
+
+修改 `docker-compose.yml` 中 postgres jieba 相关的内容。
+
+注释 migrate/create_post_search_index 中 jieba 相关的内容，然后
+
+```console
+$ bin/rails db:migrate
+```
+
+注释 `app/models/post.rb` 中 pg_search 的词典为 `jiebaqry`。
+
+查询：
+
+```ruby
+Post.pg_search("北京").limit(1)
 ```

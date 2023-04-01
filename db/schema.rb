@@ -10,24 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_27_092034) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_01_150947) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "pg_search_documents", force: :cascade do |t|
-    t.text "content"
-    t.string "searchable_type"
-    t.bigint "searchable_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["searchable_type", "searchable_id"], name: "index_pg_search_documents_on_searchable"
-  end
 
   create_table "posts", force: :cascade do |t|
     t.date "date"
     t.string "tag"
     t.string "headline"
     t.text "content"
+    t.index "((to_tsvector('simple'::regconfig, COALESCE((headline)::text, ''::text)) || to_tsvector('simple'::regconfig, COALESCE(content, ''::text))))", name: "index_posts_on_pg_search", using: :gin
   end
 
 end

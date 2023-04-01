@@ -1,13 +1,12 @@
 class Post < ApplicationRecord
-  # include PgSearch::Model
-  # multisearchable against: [:headline, :content]
-  # pg_search_scope :search_full_text, against: {
-  #   headline: 'A',
-  #   content: 'B'
-  # }
-
-  # include Elasticsearch::Model
-  # include Elasticsearch::Model::Callbacks
+  include PgSearch::Model
+  pg_search_scope :pg_search,
+    against: [:headline, :content],
+    using: {
+      tsearch: { dictionary: "simple" }
+      # tsearch: { dictionary: "chinese" }
+      # tsearch: { dictionary: "jiebaqry" }
+    }
 
   include MeiliSearch::Rails
   meilisearch do
@@ -15,4 +14,7 @@ class Post < ApplicationRecord
     filterable_attributes [:tag]
     sortable_attributes [:date]
   end
+
+  # include Elasticsearch::Model
+  # include Elasticsearch::Model::Callbacks
 end
