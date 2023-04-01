@@ -13,15 +13,12 @@ RUN git clone --depth 1 --recurse-submodules --shallow-submodules  https://githu
   && cd build \
   && cmake -DPostgreSQL_TYPE_INCLUDE_DIR=/usr/include/postgresql/15/server .. \
   && make \
-  && make install \
-  && cat install_manifest.txt | xargs tar zcf pgjieba.tar.gz
+  && make install
 
 FROM postgres:15
 
-COPY --from=builder /pg_jieba/build/pgjieba.tar.gz /
-
-RUN tar zxf /pgjieba.tar.gz
-
-RUN echo "CREATE EXTENSION pg_jieba;" > /docker-entrypoint-initdb.d/init-jieba.sql
+COPY --from=builder /usr/lib/postgresql/15/lib/pg_jieba.so /usr/lib/postgresql/15/lib/pg_jieba.so
+COPY --from=builder /usr/share/postgresql/15/extension/pg_jieba* /usr/share/postgresql/15/extension/
+COPY --from=builder /usr/share/postgresql/15/tsearch_data/jieba* /usr/share/postgresql/15/tsearch_data/
 
 CMD ["postgres", "-c", "shared_preload_libraries=pg_jieba.so"]
