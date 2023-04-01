@@ -14,7 +14,7 @@ services:
       - postgres
       - redis
       - meilisearch
-      - elasticsearch
+      # - elasticsearch
   postgres:
     image: postgres:15
     environment:
@@ -23,14 +23,12 @@ services:
   #   build:
   #     context: ./postgres
   #     dockerfile: Dockerfile.zhparser
-  #   command: postgres -c shared_preload_libraries=zhparser
   #   environment:
   #     POSTGRES_PASSWORD: postgres
   # postgres:
   #   build:
   #     context: ./postgres
   #     dockerfile: Dockerfile.jieba
-  #   command: postgres -c shared_preload_libraries=pg_jieba
   #   environment:
   #     POSTGRES_PASSWORD: postgres
   redis:

@@ -1,21 +1,34 @@
 FROM postgres:15
 
-RUN apt-get update && apt-get install -y \
-  build-essential \
-  postgresql-server-dev-15 \
-  wget \
-  git
-
-RUN wget -q -O - http://www.xunsearch.com/scws/down/scws-1.2.3.tar.bz2 | tar xjf - \
+RUN apt-get update \
+  && apt-get install -y \
+    build-essential \
+    postgresql-server-dev-15 \
+    wget \
+    git \
+  # build
+  && wget -q -O - http://www.xunsearch.com/scws/down/scws-1.2.3.tar.bz2 | tar xjf - \
   && cd scws-1.2.3 \
   && ./configure \
   && make install \
   && cd .. \
-  && rm -rf scws-1.2.3
-
-RUN git clone https://github.com/amutu/zhparser.git \
+  && rm -rf scws-1.2.3 \
+  && git clone https://github.com/amutu/zhparser.git \
   && cd zhparser \
   && make \
   && make install \
   && cd .. \
-  && rm -rf zhparser
+  && rm -rf zhparser \
+  # config
+  && echo "CREATE EXTENSION zhparser; \n\
+CREATE TEXT SEARCH CONFIGURATION chinese (PARSER = zhparser); \n\
+ALTER TEXT SEARCH CONFIGURATION chinese ADD MAPPING FOR n,v,a,i,e,l,t WITH simple;" \
+    > /docker-entrypoint-initdb.d/init-zhparser.sql \
+  # clean
+  && apt-get purge -y \
+    build-essential \
+    postgresql-server-dev-15 \
+    wget \
+    git \
+  && apt-get autoremove -y \
+  && rm -rf /var/lib/apt/lists/*
