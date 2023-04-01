@@ -1,13 +1,13 @@
-FROM postgres:15
+FROM postgres:15 AS builder
 
 RUN apt-get update \
   && apt-get install -y \
     build-essential \
     cmake \
     postgresql-server-dev-15 \
-    git \
-  # build
-  && git clone https://github.com/jaiminpan/pg_jieba \
+    git
+
+RUN git clone --depth 1 --recurse-submodules --shallow-submodules  https://github.com/jaiminpan/pg_jieba \
   && cd pg_jieba \
   && git submodule update --init --recursive \
   && mkdir build \
@@ -15,14 +15,14 @@ RUN apt-get update \
   && cmake -DPostgreSQL_TYPE_INCLUDE_DIR=/usr/include/postgresql/15/server .. \
   && make \
   && make install \
-  # config
-  && echo "\necho \"shared_preload_libraries = 'pg_jieba.so'\" >> /var/lib/postgresql/data/postgresql.conf" > /docker-entrypoint-initdb.d/init-jieba.sh \
-  && echo "CREATE EXTENSION pg_jieba;" > /docker-entrypoint-initdb.d/init-jieba.sql \
-  # clean
-  && apt-get purge -y \
-    build-essential \
-    cmake \
-    postgresql-server-dev-15 \
-    git \
-  && apt-get autoremove -y \
-  && rm -rf /pg_jieba /var/lib/apt/lists/*
+  && cat install_manifest.txt | xargs tar zcf pgjieba.tar.gz
+
+FROM postgres:15
+
+COPY --from=builder /pg_jieba/build/pgjieba.tar.gz /
+
+RUN tar zxf /pgjieba.tar.gz
+
+RUN echo "CREATE EXTENSION pg_jieba;" > /docker-entrypoint-initdb.d/init-jieba.sql
+
+CMD ["postgres", "-c", "shared_preload_libraries=pg_jieba.so"]
