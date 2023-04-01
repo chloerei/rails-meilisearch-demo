@@ -9,7 +9,6 @@ RUN apt-get update \
 
 RUN git clone --depth 1 --recurse-submodules --shallow-submodules  https://github.com/jaiminpan/pg_jieba \
   && cd pg_jieba \
-  && git submodule update --init --recursive \
   && mkdir build \
   && cd build \
   && cmake -DPostgreSQL_TYPE_INCLUDE_DIR=/usr/include/postgresql/15/server .. \
