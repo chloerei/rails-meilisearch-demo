@@ -15,16 +15,16 @@ services:
       - redis
       - meilisearch
       # - elasticsearch
-  postgres:
-    image: postgres:15
-    environment:
-      POSTGRES_PASSWORD: postgres
   # postgres:
-  #   build:
-  #     context: ./postgres
-  #     dockerfile: Dockerfile.zhparser
+  #   image: postgres:15
   #   environment:
   #     POSTGRES_PASSWORD: postgres
+  postgres:
+    build:
+      context: ./postgres
+      dockerfile: Dockerfile.zhparser
+    environment:
+      POSTGRES_PASSWORD: postgres
   # postgres:
   #   build:
   #     context: ./postgres

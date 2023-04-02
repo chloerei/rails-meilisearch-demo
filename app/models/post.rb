@@ -3,8 +3,8 @@ class Post < ApplicationRecord
   pg_search_scope :pg_search,
     against: [:headline, :content],
     using: {
-      tsearch: { dictionary: "simple" }
-      # tsearch: { dictionary: "chinese" }
+      # tsearch: { dictionary: "simple" }
+      tsearch: { dictionary: "chinese" }
       # tsearch: { dictionary: "jiebaqry" }
     }
 

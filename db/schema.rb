@@ -13,13 +13,14 @@
 ActiveRecord::Schema[7.0].define(version: 2023_04_01_150947) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "zhparser"
 
   create_table "posts", force: :cascade do |t|
     t.date "date"
     t.string "tag"
     t.string "headline"
     t.text "content"
-    t.index "((to_tsvector('simple'::regconfig, COALESCE((headline)::text, ''::text)) || to_tsvector('simple'::regconfig, COALESCE(content, ''::text))))", name: "index_posts_on_pg_search", using: :gin
+    t.index "((to_tsvector('chinese'::regconfig, COALESCE((headline)::text, ''::text)) || to_tsvector('chinese'::regconfig, COALESCE(content, ''::text))))", name: "index_posts_on_pg_search", using: :gin
   end
 
 end
