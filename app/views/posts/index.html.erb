@@ -1,0 +1,32 @@
+<div class="container">
+  <div class="search-form">
+    <%= form_with url: root_path, method: :get do |form| %>
+      <div class="display-flex gap-2">
+        <div class="flex-grow-1">
+          <%= form.text_field :q, value: params[:q], autofocus: true, autocomplete: "off" %>
+        </div>
+        <%= form.select :tag, ["国内", "国际"], selected: params[:tag], include_blank: "所有" %>
+        <%= form.select :sort, [["最新", "latest"]], selected: params[:sort], include_blank: "相关" %>
+        <%= form.submit "搜索" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="posts">
+    <% @posts.each do |post| %>
+      <div class="post">
+        <h2 class="post__title"><%= post.headline %></h2>
+        <div class="post__meta">
+          <%= post.date %> - <%= post.tag %>
+        </div>
+        <div class="post__content">
+          <%= sanitize post.formatted["content"] %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <div>
+    <%= paginate @posts %>
+  </div>
+</div>

@@ -80,3 +80,5 @@ gem "meilisearch-rails"
 
 gem "elasticsearch-model", "~> 7.2"
 gem "elasticsearch-rails", "~> 7.2"
+
+gem "kaminari", "~> 1.2"

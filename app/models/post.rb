@@ -13,6 +13,9 @@ class Post < ApplicationRecord
     searchable_attributes [:headline, :content]
     filterable_attributes [:tag]
     sortable_attributes [:date]
+    attributes_to_highlight [:content]
+    attributes_to_crop [:content]
+    crop_length 50
   end
 
   # include Elasticsearch::Model
